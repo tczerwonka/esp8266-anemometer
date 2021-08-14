@@ -27,6 +27,8 @@ const char* update_uri = "/path/update.php";
 /*************************************************/
 const char* mqtt_host = "mqtthost";
 const char* mqtt_id = "ESP8266-Anemometer";
-const char* mqtt_topic_prefix = "anemometer/wind";
+const char* mqtt_topic_prefix_wind = "/anemometer/wind";
+const char* mqtt_topic_prefix_temperature = "/anemometer/temperature";
+const char* mqtt_topic_prefix_relh = "/anemometer/relh";
 const int mqtt_port = 1883;
 

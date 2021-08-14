@@ -7,7 +7,7 @@ after a year.
 
 Will include: 4-bit windvane
 
-DHT22 temperature / humidity
+DHT11 temperature / humidity
 
 Light intensity via the solar cell.
 
@@ -17,11 +17,12 @@ due to a deprecated function somewhere in the code.
 
 # Hardware
 The following hardware is used for building this project:
-* ESP8266 (Wemos D1)
-* Eltako Windsensor (http://amzn.to/2ps1Tte - German Amazon)
+* ESP8266 -- cheap amazon nodemcu clone
+* Junk LaCrosse TX63U
 
 # Wiring
-I connected the anemometer with the D7 and GND Pin of my Wemos D1. But it can be all other suitable Pins used.
+* speed -- D7 to ground
+* DHT11 -- D1
 
 # Software
 For using this software you have to copy the myconfig_samples.h to myconfig.h and change the values for the MQTT server and the WLAN settings.
