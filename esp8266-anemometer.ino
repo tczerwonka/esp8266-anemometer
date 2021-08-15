@@ -19,7 +19,15 @@ DHT dht(DHTPIN, DHTTYPE);
 // current temperature & humidity, updated in loop()
 float t = 0.0;
 float h = 0.0;
+/******************************************************************************/
 
+/******************************************************************************/
+//wind direction stuff
+#define D0 16
+#define D1 5
+#define D2 4
+#define D3 0
+int windDir[] = {22, 0, 90, 292, 45, 337, 67, 315, 180, 202, 112, 270, 157, 225, 135, 247};
 /******************************************************************************/
 
 
@@ -48,6 +56,10 @@ void setup() {
   Serial.begin(115200);
   delay(10);
   pinMode(input_pin, INPUT_PULLUP);//D7
+  pinMode(D0, OUTPUT);
+  pinMode(D1, OUTPUT);
+  pinMode(D2, OUTPUT);
+  pinMode(D3, OUTPUT);
   // We start by connecting to a WiFi network
   if (debugOutput) {
     Serial.println();
@@ -96,7 +108,10 @@ void loop()
         Serial.print("Wind: ");
         Serial.print(wind);
         Serial.println(" km/h");
-        read_DHT();
+        //not going to put this in production, don't have great way to expose
+        //the sensor and it's not well-sited anyway
+        //read_DHT();
+        read_direction();
 
       }
       String strBuffer;
@@ -148,6 +163,82 @@ void reconnect() {
       maxWait++;
     }
   }
+}
+
+
+
+/******************************************************************************/
+//read_direction
+// this function needs to cycle the individual bits on and check the results
+// LSB is the outer-most, MSB is closest to the hub
+/******************************************************************************/
+void read_direction() {
+  int b0 = 0;
+  int b1 = 0;
+  int b2 = 0;
+  int b3 = 0;
+  int analog_raw = 0;
+  int bit_set = 500;
+
+
+  digitalWrite(D0, HIGH);
+  delay(10);
+  if (analogRead(A0) > bit_set) {
+    b0 = 1;
+  }
+  digitalWrite(D0, LOW);
+  //
+  digitalWrite(D1, HIGH);
+  delay(10);
+  if (analogRead(A0) > bit_set) {
+    b1 = 1;
+  }
+  digitalWrite(D1, LOW);
+  //
+  digitalWrite(D2, HIGH);
+  delay(10);
+  if (analogRead(A0) > bit_set) {
+    b2 = 1;
+  }
+  digitalWrite(D2, LOW);
+  //
+  digitalWrite(D3, HIGH);
+  delay(10);
+  if (analogRead(A0) > bit_set) {
+    b3 = 1;
+  }
+  digitalWrite(D3, LOW);
+
+  //Serial.print("results: ");
+  //Serial.print(b3);
+  //Serial.print(" ");
+  //Serial.print(b2);
+  //Serial.print(" ");
+  //Serial.print(b1);
+  //Serial.print(" ");
+  //Serial.println(b0);
+
+  //convert discrete bits to a 4-bit int
+  int number = (b3 & 0x1) | ((b2 & 0x1) << 1) | ((b1 & 0x1) << 2) | ((b0 & 0x1) << 3);
+
+  
+
+  Serial.print("Wind: ");
+  Serial.print(windDir[number]);
+  Serial.println(" degrees");
+
+
+  //report via mqtt
+  String strBuffer;
+  strBuffer =  String(windDir[number]);
+  strBuffer.toCharArray(charBuffer, 10);
+  if (!client.publish(mqtt_topic_prefix_wdir, charBuffer, false))
+  {
+    ESP.restart();
+    delay(100);
+  }
+
+
 }
 
 
