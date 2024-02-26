@@ -72,6 +72,7 @@ char charBuffer[32];
 
 WiFiClient espClient;
 PubSubClient client(espClient);
+String(address);
 
 //this is D6
 #define MOSFET_PIN D6
@@ -235,7 +236,9 @@ void loop() {
   }
 
   Serial.println("==========");
-  myLux.setOnceHigh2Res();
+  //this limits values to a max of 27306 -- not high enough for outdoor sunlight
+  //myLux.setOnceHigh2Res();
+  myLux.setOnceHighRes();
   delay(200);
   lux_val = myLux.getLux();
   Serial.print("lux: ");

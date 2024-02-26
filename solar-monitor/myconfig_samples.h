@@ -29,5 +29,7 @@ const char* mqtt_topic_prefix_dhttemperature = "/solar1/dhttemp";
 const char* mqtt_topic_prefix_uvs = "/solar1/uvs";
 const char* mqtt_topic_prefix_uvrisk = "/solar1/uvrisk";
 const char* mqtt_topic_prefix_lux = "/solar1/lux";
+const char* mqtt_topic_prefix_v4 = "/solar1/ipv4";
+const char* mqtt_topic_prefix_mac = "/solar1/mac";
 
 const int mqtt_port = 1883;
